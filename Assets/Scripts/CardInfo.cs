@@ -7,6 +7,7 @@ public class CardInfo : ScriptableObject {
 	public string cardName;
 	[TextArea(2, 3)]
 	public string desc;
+	public string element;
 	public int HP;
 	public int attack;
 	public int defense;

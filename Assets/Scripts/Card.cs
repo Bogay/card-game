@@ -10,7 +10,6 @@ public class Card : MonoBehaviour
 	public event System.EventHandler AfterKilledHandler;
 	public event System.EventHandler OnHitHandler;
 
-	CardInfo info = null;
 	public Buffable HP;
 	public int currHP;
 	public Buffable attack;
@@ -22,13 +21,9 @@ public class Card : MonoBehaviour
 	public Energy energy;
 	public List<Skill> skills;
 
-	public void setInfo(CardInfo ci)
-	{
-		if (info) return;
-		info = ci;
-	}
+	private ElementalDamageAffect _elemAff;
 
-	public void OnSummon()
+	public void OnSummon(CardInfo info)
 	{
 		HP = new Buffable(info.HP);
 		currHP = HP.getValue();
@@ -39,7 +34,7 @@ public class Card : MonoBehaviour
 		speed = new Buffable(info.speed);
 		lucky = new Buffable(info.lucky);
 		energy = Instantiate(energy);
-		skills = (info.skills);
+		skills = info.skills;
 		foreach (Buff bf in info.persistence)
 		{
 			bf.setUser(this);
@@ -48,7 +43,11 @@ public class Card : MonoBehaviour
 		}
 	}
 
-	// Update is called once per frame
+	void Start()
+	{
+		_elemAff = GameObject.Find("/Systems").GetComponent<ElementalDamageAffect>();
+	}
+
 	void Update()
 	{
 
