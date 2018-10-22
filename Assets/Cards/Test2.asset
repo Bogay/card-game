@@ -13,6 +13,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardName: B
   desc: 
+  element: 
   HP: 0
   attack: 0
   defense: 0
