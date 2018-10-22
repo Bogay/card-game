@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DamageAffect : MonoBehaviour
+public class DamageAffectSystem : ISystem
 {
 	protected Dictionary<string, string> table = new Dictionary<string, string>();
 	

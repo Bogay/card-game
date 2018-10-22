@@ -4,51 +4,92 @@ using UnityEngine;
 
 public class Card : MonoBehaviour
 {
-
+	public event System.EventHandler OnHitHandler;
 	public event System.EventHandler BeHurtHandler;
 	public event System.EventHandler BeforeKilledHandler;
 	public event System.EventHandler AfterKilledHandler;
-	public event System.EventHandler OnHitHandler;
 
-	public Buffable HP;
+	public CardInfo _test_info;
+
+	public string cardName;
+	public string element;
+	public CardAttribute HP;
 	public int currHP;
-	public Buffable attack;
-	public Buffable defense;
-	public Buffable magicAttack;
-	public Buffable magicDefense;
-	public Buffable speed;
-	public Buffable lucky;
-	public Energy energy;
+	public CardAttribute attack;
+	public CardAttribute defense;
+	public CardAttribute magicAttack;
+	public CardAttribute magicDefense;
+	public CardAttribute speed;
+	public CardAttribute lucky;
+	public Skill currentSkill;
 	public List<Skill> skills;
-
-	private ElementalDamageAffect _elemAff;
+	public bool isDead;
+	public Animator anim;
 
 	public void OnSummon(CardInfo info)
 	{
-		HP = new Buffable(info.HP);
-		currHP = HP.getValue();
-		attack = new Buffable(info.attack);
-		defense = new Buffable(info.defense);
-		magicAttack = new Buffable(info.magicAttack);
-		magicDefense = new Buffable(info.magicDefense);
-		speed = new Buffable(info.speed);
-		lucky = new Buffable(info.lucky);
-		energy = Instantiate(energy);
+		cardName = info.cardName;
+		element = info.element;
+		HP = new CardAttribute(info.HP);
+		currHP = HP.value;
+		attack = new CardAttribute(info.attack);
+		defense = new CardAttribute(info.defense);
+		magicAttack = new CardAttribute(info.magicAttack);
+		magicDefense = new CardAttribute(info.magicDefense);
+		speed = new CardAttribute(info.speed);
+		lucky = new CardAttribute(info.lucky);
 		skills = info.skills;
-		foreach (Buff bf in info.persistence)
+		anim = info.anim;
+		
+		isDead = false;
+		foreach(Buff bf in info.persistence)
 		{
-			bf.setUser(this);
-			bf.setTarget(this);
+			bf.user = this;
+			bf.target = this;
 			bf.OnOccur();
 		}
 	}
 
-	void Start()
+	void Update()
 	{
-		_elemAff = GameObject.Find("/Systems").GetComponent<ElementalDamageAffect>();
+
 	}
 
-	void Update()
+	public void OnDamaged(Card attacker, Damage dmg)
+	{
+		dmg.value.buffP(GameSystemManager.instance.getElementalResitance(element, attacker.element));
+		int val = dmg.value.value;
+
+		float ratio = 1;
+		switch(dmg.emType)
+		{
+			case Damage.DAMAGE_TYPE.PHYSICAL:
+				ratio = ((float)defense.value / (100 + defense.value));
+				break;
+			case Damage.DAMAGE_TYPE.MAGICAL:
+				ratio = ((float)magicDefense.value / (100 + magicDefense.value));
+				break;
+			case Damage.DAMAGE_TYPE.REAL:
+				ratio = 1;
+				break;
+			default:
+				Debug.Log(System.String.Format("Error: unrecongnized damage type [{0}] from [{1}]", dmg.emType, attacker.cardName));
+				break;
+		}
+
+		currHP -= (int)(val * ratio);
+		if(currHP <= 0)
+		{
+			if(BeforeKilledHandler != null) BeforeKilledHandler(this, System.EventArgs.Empty);
+		}
+		
+		if(isDead)
+		{
+			die();
+		}
+	}
+
+	public void die()
 	{
 
 	}

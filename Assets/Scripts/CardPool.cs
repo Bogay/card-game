@@ -7,7 +7,7 @@ public class CardPool : MonoBehaviour
 
 	public CardInfo[] cards;
 	
-	int totalWeight = 0;
+	private int totalWeight = 0;
 
 	// Use this for initialization
 	void Start()

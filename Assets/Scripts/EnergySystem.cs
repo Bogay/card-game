@@ -2,19 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Energy : MonoBehaviour {
-
+public class EnergySystem : ISystem
+{
+	public bool inCharging = false;
 	public float addRate = 5;
 	public float subRate = 15;
-	float curr = 0;
-	float limit = 100;
-	bool inCharging = false;
+	public float curr { get; private set; } = 0;
+	private float limit = 100;
 
-	public void charge() { inCharging = true; }
-	public void unCharge() { inCharging = false; }
-
-	// Update is called once per frame
-	void Update () {
+	public void reset() { curr = 0; }
+	public override void update()
+	{
 		if(inCharging)
 		{
 			curr += (addRate * Time.deltaTime);

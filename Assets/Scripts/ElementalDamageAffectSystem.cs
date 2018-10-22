@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ElementalDamageAffect : DamageAffect
+public class ElementalDamageAffectSystem : DamageAffectSystem
 {
-	void Start()
+	public override void initialize()
 	{
 		table.Add("water", "fire");
 		table.Add("fire", "earth");

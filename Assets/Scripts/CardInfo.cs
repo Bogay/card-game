@@ -19,4 +19,6 @@ public class CardInfo : ScriptableObject {
 
 	public List<Buff> persistence;
 	public List<Skill> skills;
+
+	public Animator anim;
 }

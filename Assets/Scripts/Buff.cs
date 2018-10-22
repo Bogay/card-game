@@ -2,28 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Buff : MonoBehaviour
+public class Buff : MonoBehaviour
 {
-    protected Card user;
-    protected Card target;
+    public Card user;
+    public Card target;
     protected float tickGap; //how long it call onTick() once
-    protected float tickTimer = 0; //reocrd the time since last call of onTick()
     protected float maintainTime; //how long it should exist
-    protected float exsitTime = 0; //how long the buff has been existed
-
-    public void setUser(Card u) { user = u; }
-    public void setTarget(Card t) { target = t; }
 
     public virtual void OnOccur() {}
-    public virtual void OnHit() {}
-    public virtual void BeHurt() {}
-    public virtual void OnTick() {}
-    public virtual void OnRemoved() {}
-    public virtual void BeforeKilled() {}
-    public virtual void AfterKilled() {}
+    public virtual IEnumerator OnTick() { yield return new WaitForSeconds(tickGap); }
+    public virtual void OnHit(object sender, System.EventArgs e) {}
+    public virtual void BeHurt(object sender, System.EventArgs e) {}
+    public virtual void OnRemoved(object sender, System.EventArgs e) {}
+    public virtual void BeforeKilled(object sender, System.EventArgs e) {}
+    public virtual void AfterKilled(object sender, System.EventArgs e) {}
 
-    void Update()
+    public Buff(Card u, Card t)
     {
-        
+        user = u;
+        target = t;
+    }
+
+    void Start()
+    {
+        if(maintainTime > 0)
+            Destroy(this, maintainTime);
     }
 }
